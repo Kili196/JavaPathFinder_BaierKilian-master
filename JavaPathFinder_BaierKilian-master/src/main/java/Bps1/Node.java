@@ -80,8 +80,8 @@ public class Node {
         this.x = x;
         this.y = y;
         this.nodeStates = nodeStates;
-        this.row = y / slidervalue + 1;
-        this.collum = x / slidervalue + 1;
+        this.row = (y / slidervalue);
+        this.collum = (x / slidervalue);
     }
 
     public NodeStates getNodeStates() {

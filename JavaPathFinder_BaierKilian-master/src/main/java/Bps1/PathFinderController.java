@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.TreeSet;
 
 public class PathFinderController implements Initializable {
     boolean setStart = false;
@@ -69,6 +70,36 @@ public class PathFinderController implements Initializable {
         }
     }
 
+    public void stillDraw(){
+        for(Node node : allNodes){
+            if(node.getNodeStates() != NodeStates.EMPTY){
+                drawInGrid(node);
+            }
+        }
+    }
+
+    public void drawInGrid(Node node){
+        Color color = Color.WHITE;
+        int x = (int) ((node.getX() / fxSlider.getValue()) * fxSlider.getValue());
+        int y = (int) ((node.getY() / fxSlider.getValue()) * fxSlider.getValue());
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        if(node.getNodeStates() == NodeStates.BARRIER){
+            color = Color.GREY;
+        }
+        else if(node.getNodeStates() == NodeStates.LIGHTBARRIER){
+            color = Color.DARKGRAY;
+        }
+        else if(node.getNodeStates() == NodeStates.TARGET){
+            color = Color.RED;
+        }
+        else if(node.getNodeStates() == NodeStates.PLAYER){
+            color = Color.GREEN;
+        }
+        gc.setFill(color);
+        gc.fillRect(x+1,y+1,fxSlider.getValue() - 2, fxSlider.getValue() - 2);
+    }
+
 
 
 
@@ -91,7 +122,19 @@ public class PathFinderController implements Initializable {
             allNodes.set(idx, node);
         }
         System.out.println(allNodes);
+    }
 
+    public void delteWrongRowsCollumns(int maxRow, int maxColumn){
+        ArrayList<Node> toDel = new ArrayList<>();
+        for(Node node : allNodes){
+            if(node.getRow() > maxRow ){
+                toDel.add(node);
+            }
+            else if(node.getCollum() > maxColumn){
+                toDel.add(node);
+            }
+        }
+        allNodes.removeAll(toDel);
     }
 
 
@@ -136,25 +179,26 @@ public class PathFinderController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        stillDraw();
         drawInNode();
         checkBox.selectedProperty().addListener((o, oldV, newV) -> {
             if (checkBox.isSelected()) {
                 drawGrid((int) fxSlider.getValue());
-                // for(Node node : allPaintedNodes){
-                //   if(node.getNodeStates() == NodeStates.BARRIER){
-                //     drawInGrid(node.getX(), node.getY());
-                //}
-
+                stillDraw();
+                int maxRow = (int) (canvas.getWidth() / fxSlider.getValue() - 1);
+                int maxColumn = (int) (canvas.getHeight() / fxSlider.getValue() - 1);
+                delteWrongRowsCollumns(maxRow, maxColumn);
                 fxSlider.valueProperty().addListener((observableValue, number, t1) -> {
                     if (!fxSlider.isValueChanging()) {
                         clearCanvas();
-                        System.out.println(fxSlider.getValue());
                         drawGrid((int) fxSlider.getValue());
+                        stillDraw();
                     }
                 });
             }
                 else{
                     clearCanvas();
+                    stillDraw();
                 }
             });
         }
