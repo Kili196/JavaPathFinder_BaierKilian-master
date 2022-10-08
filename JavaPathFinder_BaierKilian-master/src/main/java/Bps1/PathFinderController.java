@@ -68,6 +68,7 @@ public class PathFinderController implements Initializable {
                 allNodes.add(new Node(i, j, NodeStates.EMPTY,  (int) fxSlider.getValue()));
             }
         }
+
     }
 
     public void stillDraw(){
@@ -176,13 +177,14 @@ public class PathFinderController implements Initializable {
             }
 
         });
+        stillDraw();
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        stillDraw();
         drawInNode();
         checkBox.selectedProperty().addListener((o, oldV, newV) -> {
             if (checkBox.isSelected()) {
+                stillDraw();
                 drawGrid((int) fxSlider.getValue());
                 stillDraw();
                 int maxRow = (int) (canvas.getWidth() / fxSlider.getValue() - 1);
