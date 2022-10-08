@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
 
@@ -68,6 +69,9 @@ public class PathFinderController implements Initializable {
                 allNodes.add(new Node(i, j, NodeStates.EMPTY,  (int) fxSlider.getValue()));
             }
         }
+        int maxRow = (int) (canvas.getWidth() / 24 - 1);
+        int maxColumn = (int) (canvas.getHeight() / 24 - 1);
+        delteWrongRowsCollumns(maxRow,maxColumn);
 
     }
 
@@ -81,9 +85,8 @@ public class PathFinderController implements Initializable {
 
     public void drawInGrid(Node node){
         Color color = Color.WHITE;
-        int x = (int) ((node.getX() / fxSlider.getValue()) * fxSlider.getValue());
-        int y = (int) ((node.getY() / fxSlider.getValue()) * fxSlider.getValue());
-
+        int x = (int) (node.getCollum() * fxSlider.getValue());
+        int y = (int) (node.getRow() * fxSlider.getValue());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         if(node.getNodeStates() == NodeStates.BARRIER){
             color = Color.GREY;
@@ -122,6 +125,7 @@ public class PathFinderController implements Initializable {
             }
             allNodes.set(idx, node);
         }
+        Collections.sort(allNodes, new SortByRow());
         System.out.println(allNodes);
     }
 
@@ -136,6 +140,7 @@ public class PathFinderController implements Initializable {
             }
         }
         allNodes.removeAll(toDel);
+
     }
 
 
@@ -145,13 +150,13 @@ public class PathFinderController implements Initializable {
                 drawInGrid(Color.GREY, mouseEvent, NodeStates.BARRIER);
             }
             else if(lightBarrierRadioButton.isSelected()){
-                    drawInGrid(Color.DARKGRAY, mouseEvent, NodeStates.LIGHTBARRIER);
-                }
+                drawInGrid(Color.DARKGRAY, mouseEvent, NodeStates.LIGHTBARRIER);
+            }
 
             else if(loeschenRadioButton.isSelected()){
                 drawInGrid(Color.WHITE, mouseEvent, NodeStates.EMPTY);
             }
-            });
+        });
 
         canvas.setOnMouseClicked(mouseEvent -> {
             if(radioButonBarrier.isSelected()) {
@@ -187,21 +192,22 @@ public class PathFinderController implements Initializable {
                 stillDraw();
                 drawGrid((int) fxSlider.getValue());
                 stillDraw();
-                int maxRow = (int) (canvas.getWidth() / fxSlider.getValue() - 1);
-                int maxColumn = (int) (canvas.getHeight() / fxSlider.getValue() - 1);
-                delteWrongRowsCollumns(maxRow, maxColumn);
                 fxSlider.valueProperty().addListener((observableValue, number, t1) -> {
                     if (!fxSlider.isValueChanging()) {
+
+
                         clearCanvas();
                         drawGrid((int) fxSlider.getValue());
+
                         stillDraw();
+
                     }
                 });
             }
-                else{
-                    clearCanvas();
-                    stillDraw();
-                }
-            });
-        }
+            else{
+                clearCanvas();
+                stillDraw();
+            }
+        });
     }
+}

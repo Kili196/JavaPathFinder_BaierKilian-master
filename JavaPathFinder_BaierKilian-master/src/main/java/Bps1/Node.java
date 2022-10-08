@@ -104,12 +104,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node{" +
-                "x=" + x +
-                ", y=" + y +
-                ", row=" + row +
-                ", collum=" + collum +
-                ", nodeStates=" + nodeStates +
-                '}';
+
+        return "Row " + row + " " + "Collumn " + collum + "  State " + nodeStates;
     }
 }
