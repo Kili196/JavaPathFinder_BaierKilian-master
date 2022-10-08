@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
-import java.util.TreeSet;
 
 public class PathFinderController implements Initializable {
     boolean setStart = false;
@@ -168,13 +167,13 @@ public class PathFinderController implements Initializable {
             else if(loeschenRadioButton.isSelected()){
                 drawInGrid(Color.WHITE, mouseEvent, NodeStates.EMPTY);
             }
-            if(setStart == false) {
+            if(!setStart ) {
                 if (startRadioButton.isSelected()) {
                     drawInGrid(Color.GREEN, mouseEvent, NodeStates.PLAYER);
                     setStart = true;
                 }
             }
-            if(setZiel == false) {
+            if(!setZiel) {
                 if (zielRadioButton.isSelected()) {
                     drawInGrid(Color.RED, mouseEvent, NodeStates.TARGET);
                     setZiel = true;
@@ -184,21 +183,33 @@ public class PathFinderController implements Initializable {
         });
         stillDraw();
     }
+
+    public void setCheckBoxSettings(){
+        checkBox.setSelected(true);
+        if(checkBox.isSelected()){
+            drawGrid((int) fxSlider.getValue());
+            fxSlider.valueProperty().addListener((observableValue, number, t1) -> {
+                if (!fxSlider.isValueChanging()) {
+                    clearCanvas();
+                    drawGrid((int) fxSlider.getValue());
+                    stillDraw();
+
+                }
+            });
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         drawInNode();
+        setCheckBoxSettings();
         checkBox.selectedProperty().addListener((o, oldV, newV) -> {
             if (checkBox.isSelected()) {
-                stillDraw();
                 drawGrid((int) fxSlider.getValue());
                 stillDraw();
                 fxSlider.valueProperty().addListener((observableValue, number, t1) -> {
                     if (!fxSlider.isValueChanging()) {
-
-
                         clearCanvas();
                         drawGrid((int) fxSlider.getValue());
-
                         stillDraw();
 
                     }
