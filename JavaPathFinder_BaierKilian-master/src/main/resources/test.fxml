@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="anchorpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Bps1.PathFinderController">
+   <children>
+      <Canvas fx:id="canvas" height="720.0" layoutX="60.0" layoutY="63.0" width="720.0" />
+      <CheckBox fx:id="checkBox" layoutX="102.0" layoutY="856.0" mnemonicParsing="false" text="Grid" />
+      <Slider fx:id="fxSlider" blockIncrement="12.0" layoutX="225.0" layoutY="845.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="0" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+      <RadioButton fx:id="zielRadioButton" layoutX="479.0" layoutY="848.0" mnemonicParsing="false" text="Ziel">
+         <toggleGroup>
+            <ToggleGroup fx:id="RadioButon" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="lightBarrierRadioButton" layoutX="479.0" layoutY="865.0" mnemonicParsing="false" text="LightBarrier" toggleGroup="$RadioButon" />
+      <RadioButton fx:id="startRadioButton" layoutX="479.0" layoutY="831.0" mnemonicParsing="false" text="Start" toggleGroup="$RadioButon" />
+      <RadioButton fx:id="loeschenRadioButton" layoutX="562.0" layoutY="831.0" mnemonicParsing="false" text="Löschen" toggleGroup="$RadioButon" />
+      <RadioButton fx:id="radioButonBarrier" layoutX="562.0" layoutY="848.0" mnemonicParsing="false" text="Barrier" toggleGroup="$RadioButon" />
+   </children>
+</AnchorPane>
