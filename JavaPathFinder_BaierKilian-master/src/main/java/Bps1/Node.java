@@ -12,16 +12,21 @@ public class Node {
     private int y;
     private int costs;
     ArrayList nodeList = new ArrayList();
-
     private int row;
     private int collum;
-
     NodeStates nodeStates;
 
 
     public int getId() {
         return id;
     }
+
+    public void setNodeStates(NodeStates nodeStates) {
+        this.nodeStates = nodeStates;
+    }
+
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -67,13 +72,24 @@ public class Node {
         this.costs = costs;
     }
 
-    public ArrayList getNodeList() {
+    public ArrayList<Node> getNodeList() {
         return nodeList;
     }
 
     public void setNodeList(ArrayList nodeList) {
         this.nodeList = nodeList;
     }
+
+
+    public Node(int x, int y, NodeStates nodeStates, int slidervalue, int id) {
+        this.x = x;
+        this.y = y;
+        this.nodeStates = nodeStates;
+        this.row = (y / slidervalue);
+        this.collum = (x / slidervalue);
+        this.id = id;
+    }
+
 
 
     public Node(int x, int y, NodeStates nodeStates, int slidervalue) {
@@ -83,7 +99,6 @@ public class Node {
         this.row = (y / slidervalue);
         this.collum = (x / slidervalue);
     }
-
     public NodeStates getNodeStates() {
         return nodeStates;
     }
@@ -94,17 +109,17 @@ public class Node {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Node node)) return false;
-        return id == node.id && x == node.x && y == node.y && costs == node.costs && Objects.equals(nodeList, node.nodeList);
+        return x == node.x && y == node.y && costs == node.costs && Objects.equals(nodeList, node.nodeList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, x, y, costs, nodeList);
+        return Objects.hash(x, y, costs, nodeList);
     }
 
     @Override
     public String toString() {
 
-        return "Row " + row + " " + "Collumn " + collum + "  State " + nodeStates;
+        return getRow() + " Row " + getCollum() + " Collumn " ;
     }
 }
