@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 
@@ -16,38 +17,41 @@ import java.net.URL;
 import java.util.*;
 
 public class PathFinderController implements Initializable {
-    public Button clearButton;
     private boolean setStart = false;
     private boolean setZiel = false;
+
     @FXML
-    private AnchorPane anchorpane;
+    private VBox vBoxFXML;
 
     @FXML
     private Canvas canvas;
 
     @FXML
+    private Button clearButton;
+
+    @FXML
     private CheckBox checkBox;
-
-    @FXML
-    private Slider fxSlider;
-
-    @FXML
-    private RadioButton zielRadioButton;
-
-    @FXML
-    private ToggleGroup RadioButon;
-
-    @FXML
-    private RadioButton lightBarrierRadioButton;
-
-    @FXML
-    private RadioButton startRadioButton;
 
     @FXML
     private RadioButton loeschenRadioButton;
 
     @FXML
+    private ToggleGroup RadioButon;
+
+    @FXML
     private RadioButton radioButonBarrier;
+
+    @FXML
+    private RadioButton startRadioButton;
+
+    @FXML
+    private RadioButton lightBarrierRadioButton;
+
+    @FXML
+    private RadioButton zielRadioButton;
+
+    @FXML
+    private Slider fxSlider;
     private final ArrayList<Node> allNodes = new ArrayList<>();
     private final ArrayList<Node> rightNodes = new ArrayList<>();
     int id = 0;
@@ -102,7 +106,6 @@ public class PathFinderController implements Initializable {
                 neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() + 1));
                 neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
                 node.setNodeList(neighbors);
-                System.out.println(neighbors);
         }
     }
     public void setClearButton(){
@@ -253,8 +256,8 @@ public class PathFinderController implements Initializable {
         drawInNode();
         setCheckBoxSettings();
         setClearButton();
-        canvas.heightProperty().bind(anchorpane.heightProperty().subtract(180));
-        canvas.widthProperty().bind(anchorpane.widthProperty().subtract(120));
+        canvas.heightProperty().bind(vBoxFXML.heightProperty().subtract(180));
+        canvas.widthProperty().bind(vBoxFXML.widthProperty().subtract(120));
 
         canvas.heightProperty().addListener(observable -> {
             drawGrid((int) fxSlider.getValue());

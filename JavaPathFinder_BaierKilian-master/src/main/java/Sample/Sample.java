@@ -7,10 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class Sample extends Application {
@@ -18,7 +15,7 @@ public class Sample extends Application {
     public void start(Stage stage) throws Exception {
         String fxmlPath = "../test.fxml";
 
-        AnchorPane root = (AnchorPane) FXMLLoader.load(getClass().getResource(fxmlPath));
+        VBox root = FXMLLoader.load(getClass().getResource(fxmlPath));
 
         Scene scene = new Scene(root);
         stage.setScene(scene);

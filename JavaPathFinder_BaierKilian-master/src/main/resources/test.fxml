@@ -7,26 +7,14 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.effect.Bloom?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Bps1.PathFinderController">
+<VBox fx:id="vBoxFXML" prefHeight="900.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Bps1.PathFinderController">
    <children>
-      <Canvas fx:id="canvas" height="720.0" layoutX="60.0" layoutY="63.0" width="720.0" />
-      <CheckBox fx:id="checkBox" layoutX="102.0" layoutY="856.0" mnemonicParsing="false" text="Grid" />
-      <Slider fx:id="fxSlider" blockIncrement="12.0" layoutX="225.0" layoutY="845.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="0" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-      <RadioButton fx:id="zielRadioButton" layoutX="479.0" layoutY="848.0" mnemonicParsing="false" text="Ziel">
-         <toggleGroup>
-            <ToggleGroup fx:id="RadioButon" />
-         </toggleGroup>
-      </RadioButton>
-      <RadioButton fx:id="lightBarrierRadioButton" layoutX="479.0" layoutY="865.0" mnemonicParsing="false" text="LightBarrier" toggleGroup="$RadioButon" />
-      <RadioButton fx:id="startRadioButton" layoutX="479.0" layoutY="831.0" mnemonicParsing="false" text="Start" toggleGroup="$RadioButon" />
-      <RadioButton fx:id="loeschenRadioButton" layoutX="562.0" layoutY="831.0" mnemonicParsing="false" text="Löschen" toggleGroup="$RadioButon" />
-      <RadioButton fx:id="radioButonBarrier" layoutX="562.0" layoutY="848.0" mnemonicParsing="false" text="Barrier" toggleGroup="$RadioButon" />
-      <Button fx:id="clearButton" layoutX="34.0" layoutY="853.0" mnemonicParsing="false" text="Clear" />
-      <Text layoutX="-22.0" layoutY="47.0" stroke="WHITE" strokeWidth="0.0" text="Pathfinder von Kilian Baier" textAlignment="CENTER" wrappingWidth="509.6259765625">
+      <Text stroke="WHITE" strokeWidth="0.0" text="Pathfinder von Kilian Baier" textAlignment="CENTER" wrappingWidth="509.6259765625">
          <font>
             <Font size="30.0" />
          </font>
@@ -34,5 +22,26 @@
             <Bloom threshold="0.11" />
          </effect>
       </Text>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Canvas fx:id="canvas" height="720.0" width="720.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <children>
+            <Button fx:id="clearButton" mnemonicParsing="false" text="Clear" />
+            <CheckBox fx:id="checkBox" mnemonicParsing="false" text="Grid" />
+            <RadioButton fx:id="loeschenRadioButton" mnemonicParsing="false" text="Löschen">
+               <toggleGroup>
+                  <ToggleGroup fx:id="RadioButon" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="radioButonBarrier" mnemonicParsing="false" text="Barrier" toggleGroup="$RadioButon" />
+            <RadioButton fx:id="startRadioButton" mnemonicParsing="false" text="Start" toggleGroup="$RadioButon" />
+            <RadioButton fx:id="lightBarrierRadioButton" mnemonicParsing="false" text="LightBarrier" toggleGroup="$RadioButon" />
+            <RadioButton fx:id="zielRadioButton" mnemonicParsing="false" text="Ziel" toggleGroup="$RadioButon" />
+         </children>
+      </HBox>
+      <Slider fx:id="fxSlider" blockIncrement="12.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="0" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
    </children>
-</AnchorPane>
+</VBox>
