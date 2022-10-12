@@ -11,11 +11,33 @@ public class Node {
     private int x;
     private int y;
     private int costs;
+
+    private int fCosts; //sum of h and g
+    private int hCosts; //distance from endnode
+    private int gCosts; //distance from starting node
     ArrayList nodeList = new ArrayList();
     private int row;
     private int collum;
+
+    private boolean horizontalOrvertical = false;
+    private boolean diagonal = false;
     NodeStates nodeStates;
 
+    public boolean isHorizontalOrvertical() {
+        return horizontalOrvertical;
+    }
+
+    public void setHorizontalOrvertical(boolean horizontalOrvertical) {
+        this.horizontalOrvertical = horizontalOrvertical;
+    }
+
+    public boolean isDiagonal() {
+        return diagonal;
+    }
+
+    public void setDiagonal(boolean diagonal) {
+        this.diagonal = diagonal;
+    }
 
     public int getId() {
         return id;
@@ -81,6 +103,30 @@ public class Node {
     }
 
 
+    public int getfCosts() {
+        return fCosts;
+    }
+
+    public void setfCosts(int fCosts) {
+        this.fCosts = fCosts;
+    }
+
+    public int gethCosts() {
+        return hCosts;
+    }
+
+    public void sethCosts(int hCosts) {
+        this.hCosts = hCosts;
+    }
+
+    public int getgCosts() {
+        return gCosts;
+    }
+
+    public void setgCosts(int gCosts) {
+        this.gCosts = gCosts;
+    }
+
     public Node(int x, int y, NodeStates nodeStates, int slidervalue, int id) {
         this.x = x;
         this.y = y;
@@ -89,8 +135,6 @@ public class Node {
         this.collum = (x / slidervalue);
         this.id = id;
     }
-
-
 
     public Node(int x, int y, NodeStates nodeStates, int slidervalue) {
         this.x = x;
@@ -109,17 +153,17 @@ public class Node {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Node node)) return false;
-        return x == node.x && y == node.y && costs == node.costs && Objects.equals(nodeList, node.nodeList);
+        return x == node.x && y == node.y && costs == node.costs;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, costs, nodeList);
+        return Objects.hash(x, y, costs);
     }
 
     @Override
     public String toString() {
 
-        return getRow() + " Row " + getCollum() + " Collumn " ;
+        return getRow() + " Row " + getCollum() + " Collumn " + " h " + gethCosts() + " g " + getgCosts() + "}";
     }
 }

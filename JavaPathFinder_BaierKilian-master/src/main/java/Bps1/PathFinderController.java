@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -57,6 +56,8 @@ public class PathFinderController implements Initializable {
     int id = 0;
 
     public void clearCanvas() {
+        setZiel = false;
+        setStart = false;
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getWidth());
     }
@@ -96,16 +97,34 @@ public class PathFinderController implements Initializable {
 
     public void getNeighbors(){
         for(Node node : rightNodes){
-                ArrayList<Node> neighbors = new ArrayList<>();
-                neighbors.add(getRowsAndColls(node.getCollum(), node.getRow() + 1 ));
-                neighbors.add(getRowsAndColls(node.getCollum(), node.getRow() - 1 ));
-                neighbors.add(getRowsAndColls(node.getCollum() + 1 , node.getRow()));
-                neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow()));
-                neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
-                neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() - 1));
-                neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() + 1));
-                neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
-                node.setNodeList(neighbors);
+            int count = 1;
+            Node tmpnode;
+            ArrayList<Node> neighbors = new ArrayList<>();
+            tmpnode = (getRowsAndColls(node.getCollum(), node.getRow() + 1 ));
+            neighbors.add(tmpnode);
+            tmpnode = (getRowsAndColls(node.getCollum(), node.getRow() - 1 ));
+            neighbors.add(tmpnode);
+            tmpnode = (getRowsAndColls(node.getCollum() +1 , node.getRow()));
+            neighbors.add(tmpnode);
+            tmpnode = (getRowsAndColls(node.getCollum() -1 , node.getRow()));
+            neighbors.add(tmpnode);
+            neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
+            neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() - 1));
+            neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() + 1));
+            neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
+            for(Node node1 : neighbors){
+                if(node1 != null){
+                    if(count <= 4){
+                        node1.setHorizontalOrvertical(true);
+                    }
+                    else{
+                        node1.setDiagonal(true);
+                    }
+                }
+                count++;
+            }
+            while (neighbors.remove(null));
+            node.setNodeList(neighbors);
         }
     }
     public void setClearButton(){
@@ -166,7 +185,6 @@ public class PathFinderController implements Initializable {
         gc.setFill(color);
         gc.fillRect(x+1,y+1,fxSlider.getValue() - 2, fxSlider.getValue() - 2);
         Node node = findNode(x, y);
-        node.setNodeStates(nodeStates);
         if(rightNodes.contains(node)){
             int idx = rightNodes.indexOf(node);
             if(rightNodes.get(idx).getNodeStates() == NodeStates.PLAYER){
@@ -177,7 +195,9 @@ public class PathFinderController implements Initializable {
             }
             rightNodes.set(idx, node);
         }
+        node.setNodeStates(nodeStates);
         rightNodes.sort(new SortByRow());
+
 
     }
 
@@ -195,9 +215,56 @@ public class PathFinderController implements Initializable {
 
     }
 
+    public void printNeighborList(Node node){
+            if(rightNodes.contains(node)){
+                System.out.println(node.getNodeList());
+            }
+    }
+
+    public Node getStart(){
+        for(Node node : rightNodes){
+            if(node.getNodeStates() == NodeStates.PLAYER){
+                return node;
+            }
+        }
+        return null;
+    }
+
+
+    public Node getZiel(){
+        for(Node node : rightNodes){
+            if(node.getNodeStates() == NodeStates.TARGET){
+                return node;
+            }
+        }
+        return null;
+    }
+
+
+
+    public void aStarAlgorithm() {
+        Node start = getStart();
+        Node ziel = getZiel();
+
+        if(start != null) {
+
+            ArrayList<Node> neighborlist = start.getNodeList();
+            for (Node node : start.getNodeList()) {
+                if (node.isHorizontalOrvertical()) {
+                    node.setgCosts(node.getgCosts() + 10);
+                } else if (node.isDiagonal()) {
+                    node.sethCosts(node.gethCosts() + 14);
+                }
+            }
+        }
+
+    }
+
+
 
     public void drawInNode(){
         canvas.setOnMouseDragged(mouseEvent -> {
+
             if(radioButonBarrier.isSelected()) {
                 drawInGrid(Color.GREY, mouseEvent, NodeStates.BARRIER);
             }
@@ -208,6 +275,7 @@ public class PathFinderController implements Initializable {
             else if(loeschenRadioButton.isSelected()){
                 drawInGrid(Color.WHITE, mouseEvent, NodeStates.EMPTY);
             }
+            aStarAlgorithm();
         });
 
         canvas.setOnMouseClicked(mouseEvent -> {
@@ -232,8 +300,10 @@ public class PathFinderController implements Initializable {
                     setZiel = true;
                 }
             }
+            aStarAlgorithm();
 
         });
+
         stillDraw();
     }
 
