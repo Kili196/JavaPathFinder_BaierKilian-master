@@ -1,84 +1,51 @@
 package Bps1;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Objects;
 
 public class Node {
 
 
+
+    private int id;
+    private int x;
+    private int y;
+    private int costs;
+    ArrayList nodeList = new ArrayList();
     private int row;
     private int collum;
-    NodeStates nodeState;
-
-    //getX of Node
-
-    int F;
-    int H;
-    int G;
-
-    Node parent;
+    NodeStates nodeStates;
 
 
-    public int getF() {
-        return F;
+    public int getId() {
+        return id;
     }
 
-    public void setF(int f) {
-        F = f;
-    }
-
-    public int getH() {
-        return H;
-    }
-
-    public void setH(int h) {
-        H = h;
-    }
-
-    public int getG() {
-        return G;
+    public void setNodeStates(NodeStates nodeStates) {
+        this.nodeStates = nodeStates;
     }
 
 
 
 
-    public void setG(int g) {
-        G = g;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Node getParent() {
-        return parent;
+    public int getX() {
+        return x;
     }
 
-    public Node(int row, int collum) {
-        this.row = row;
-        this.collum = collum;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public void setParent(Node parent) {
-        this.parent = parent;
+    public int getY() {
+        return y;
     }
 
-    public Node(int x, int y, NodeStates nodeState) {
-        this.collum = x;
-        this.row = y;
-        this.nodeState = nodeState;
-    }
-
-    public NodeStates getNodeState() {
-        return nodeState;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public void setCollum(int collum) {
-        this.collum = collum;
-    }
-
-    public void setNodeState(NodeStates nodeState) {
-        this.nodeState = nodeState;
+    public void setY(int y) {
+        this.y = y;
     }
 
     public int getRow() {
@@ -89,5 +56,70 @@ public class Node {
         return collum;
     }
 
+    public void setRow(int row) {
+        this.row = row;
+    }
 
+    public void setCollum(int collum) {
+        this.collum = collum;
+    }
+
+    public int getCosts() {
+        return costs;
+    }
+
+    public void setCosts(int costs) {
+        this.costs = costs;
+    }
+
+    public ArrayList<Node> getNodeList() {
+        return nodeList;
+    }
+
+    public void setNodeList(ArrayList nodeList) {
+        this.nodeList = nodeList;
+    }
+
+
+    public Node(int x, int y, NodeStates nodeStates, int slidervalue, int id) {
+        this.x = x;
+        this.y = y;
+        this.nodeStates = nodeStates;
+        this.row = (y / slidervalue);
+        this.collum = (x / slidervalue);
+        this.id = id;
+    }
+
+
+
+    public Node(int x, int y, NodeStates nodeStates, int slidervalue) {
+        this.x = x;
+        this.y = y;
+        this.nodeStates = nodeStates;
+        this.row = (y / slidervalue);
+        this.collum = (x / slidervalue);
+    }
+    public NodeStates getNodeStates() {
+        return nodeStates;
+    }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node node)) return false;
+        return x == node.x && y == node.y && costs == node.costs && Objects.equals(nodeList, node.nodeList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, costs, nodeList);
+    }
+
+    @Override
+    public String toString() {
+
+        return getRow() + " Row " + getCollum() + " Collumn " ;
+    }
 }
