@@ -40,6 +40,8 @@
             <RadioButton fx:id="startRadioButton" mnemonicParsing="false" text="Start" toggleGroup="$RadioButon" />
             <RadioButton fx:id="lightBarrierRadioButton" mnemonicParsing="false" text="LightBarrier" toggleGroup="$RadioButon" />
             <RadioButton fx:id="zielRadioButton" mnemonicParsing="false" text="Ziel" toggleGroup="$RadioButon" />
+            <Button fx:id="AStarButton" mnemonicParsing="false" text="A*" />
+            <Button fx:id="DjakstraButton" mnemonicParsing="false" text="Djakstra" />
          </children>
       </HBox>
       <Slider fx:id="fxSlider" blockIncrement="12.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="0" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />

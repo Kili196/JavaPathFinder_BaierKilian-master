@@ -1,5 +1,7 @@
 package Bps1;
 
 public enum NodeStates {
-    PLAYER, TARGET, EMPTY, BARRIER, LIGHTBARRIER
+    PLAYER, TARGET, EMPTY, BARRIER, LIGHTBARRIER,
+
+
 }
