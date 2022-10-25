@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="vBoxFXML" prefHeight="900.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Bps1.PathFinderController">
+<VBox fx:id="vBoxFXML" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Bps1.PathFinderController">
    <children>
       <Text stroke="WHITE" strokeWidth="0.0" text="Pathfinder von Kilian Baier" textAlignment="CENTER" wrappingWidth="509.6259765625">
          <font>
@@ -40,8 +40,9 @@
             <RadioButton fx:id="startRadioButton" mnemonicParsing="false" text="Start" toggleGroup="$RadioButon" />
             <RadioButton fx:id="lightBarrierRadioButton" mnemonicParsing="false" text="LightBarrier" toggleGroup="$RadioButon" />
             <RadioButton fx:id="zielRadioButton" mnemonicParsing="false" text="Ziel" toggleGroup="$RadioButon" />
+            <Button fx:id="astar" mnemonicParsing="false" text="A*" />
          </children>
       </HBox>
-      <Slider fx:id="fxSlider" blockIncrement="12.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="0" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+      <Slider fx:id="fxSlider" blockIncrement="4.0" majorTickUnit="12.0" max="72.0" min="24.0" minorTickCount="4" prefHeight="14.0" prefWidth="213.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
    </children>
 </VBox>

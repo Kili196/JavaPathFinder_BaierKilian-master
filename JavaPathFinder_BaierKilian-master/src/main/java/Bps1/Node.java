@@ -12,9 +12,19 @@ public class Node {
     private int y;
     private int costs;
 
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    private Node parent;
+
     private int fCosts; //sum of h and g
-    private int hCosts; //distance from endnode
-    private int gCosts; //distance from starting node
+    private double hCosts; //distance from endnode
+    private double gCosts; //distance from starting node
     ArrayList nodeList = new ArrayList();
     private int row;
     private int collum;
@@ -74,7 +84,7 @@ public class Node {
         return row;
     }
 
-    public int getCollum() {
+    public int getColumn() {
         return collum;
     }
 
@@ -111,19 +121,19 @@ public class Node {
         this.fCosts = fCosts;
     }
 
-    public int gethCosts() {
+    public double gethCosts() {
         return hCosts;
     }
 
-    public void sethCosts(int hCosts) {
+    public void sethCosts(double hCosts) {
         this.hCosts = hCosts;
     }
 
-    public int getgCosts() {
+    public double getgCosts() {
         return gCosts;
     }
 
-    public void setgCosts(int gCosts) {
+    public void setgCosts(double gCosts) {
         this.gCosts = gCosts;
     }
 
@@ -164,6 +174,6 @@ public class Node {
     @Override
     public String toString() {
 
-        return getRow() + " Row " + getCollum() + " Collumn " + " h " + gethCosts() + " g " + getgCosts() + "}";
+        return getRow() + " Row " + getColumn() + " Collumn " + " h " + gethCosts() + " g " + getgCosts() + "}";
     }
 }

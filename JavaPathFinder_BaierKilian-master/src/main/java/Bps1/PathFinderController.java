@@ -11,9 +11,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 public class PathFinderController implements Initializable {
     private boolean setStart = false;
@@ -27,6 +27,9 @@ public class PathFinderController implements Initializable {
 
     @FXML
     private Button clearButton;
+
+    @FXML
+    private Button astar;
 
     @FXML
     private CheckBox checkBox;
@@ -52,12 +55,15 @@ public class PathFinderController implements Initializable {
     @FXML
     private Slider fxSlider;
     private final ArrayList<Node> allNodes = new ArrayList<>();
-    private final ArrayList<Node> rightNodes = new ArrayList<>();
     int id = 0;
+
+    int lastMaxRow = 0;
+    int lastMaxColumn = 0;
 
     public void clearCanvas() {
         setZiel = false;
         setStart = false;
+        allNodes.clear();
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getWidth());
     }
@@ -66,164 +72,169 @@ public class PathFinderController implements Initializable {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(2);
         gc.setFill(Color.WHITE);
-        gc.fillRect(0,0,canvas.getWidth(), canvas.getHeight());
-        for (int i = 0; i <= canvas.getWidth(); i += size) {
-            for (int j = 0; j <= canvas.getHeight(); j += size) {
+        double width = (Math.floor(canvas.getWidth() / size)) * size;
+        double height = (Math.floor(canvas.getHeight() / size)) * size;
+
+        gc.fillRect(0, 0, width, height);
+        for (int i = 0; i <= width; i += size) {
+            for (int j = 0; j <= height; j += size) {
                 gc.strokeRect(0, 0, i, j);
-                allNodes.add(new Node(i, j, NodeStates.EMPTY,  (int) fxSlider.getValue(), id));
+                Node n;
+                if ((n = findNode(i, j)) != null) {
+                    drawInGrid(n);
+                } else {
+                    allNodes.add(new Node(i, j, NodeStates.EMPTY, (int) fxSlider.getValue(), id));
+                }
+
+                //
             }
         }
         int maxRow = (int) (canvas.getWidth() / 24 - 1);
         int maxColumn = (int) (canvas.getHeight() / 24 - 1);
-        delteWrongRowsCollumns(maxRow,maxColumn);
-        for(Node node : allNodes){
-            if(allNodes.contains(node)){
-                rightNodes.add(new Node(node.getX(), node.getY(), node.getNodeStates(), (int) fxSlider.getValue(), id));
-                id++;
-            }
+        System.out.println(maxColumn + ":" + maxRow);
+        if (!(lastMaxColumn == maxColumn && lastMaxRow == maxRow)) {
+            lastMaxColumn = maxColumn;
+            lastMaxRow = maxRow;
+            //delteWrongRowsCollumns(maxRow, maxColumn);
         }
         getNeighbors();
+        stillDraw();
     }
 
 
-    public Node getRowsAndColls(int x, int y){
-        for(Node node : rightNodes){
-            if(x == node.getCollum() && y == node.getRow()){
+    public Node getRowsAndColls(int x, int y) {
+        for (Node node : allNodes) {
+            if (x == node.getColumn() && y == node.getRow()) {
                 return node;
             }
         }
         return null;
     }
 
-    public void getNeighbors(){
-        for(Node node : rightNodes){
+    public void getNeighbors() {
+        for (Node node : allNodes) {
             int count = 1;
             Node tmpnode;
             ArrayList<Node> neighbors = new ArrayList<>();
-            tmpnode = (getRowsAndColls(node.getCollum(), node.getRow() + 1 ));
+            tmpnode = (getRowsAndColls(node.getColumn(), node.getRow() + 1));
             neighbors.add(tmpnode);
-            tmpnode = (getRowsAndColls(node.getCollum(), node.getRow() - 1 ));
+            tmpnode = (getRowsAndColls(node.getColumn(), node.getRow() - 1));
             neighbors.add(tmpnode);
-            tmpnode = (getRowsAndColls(node.getCollum() +1 , node.getRow()));
+            tmpnode = (getRowsAndColls(node.getColumn() + 1, node.getRow()));
             neighbors.add(tmpnode);
-            tmpnode = (getRowsAndColls(node.getCollum() -1 , node.getRow()));
+            tmpnode = (getRowsAndColls(node.getColumn() - 1, node.getRow()));
             neighbors.add(tmpnode);
-            neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
-            neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() - 1));
-            neighbors.add(getRowsAndColls(node.getCollum() + 1, node.getRow() + 1));
-            neighbors.add(getRowsAndColls(node.getCollum() - 1, node.getRow() - 1));
-            for(Node node1 : neighbors){
-                if(node1 != null){
-                    if(count <= 4){
+            neighbors.add(getRowsAndColls(node.getColumn() - 1, node.getRow() - 1));
+            neighbors.add(getRowsAndColls(node.getColumn() + 1, node.getRow() - 1));
+            neighbors.add(getRowsAndColls(node.getColumn() + 1, node.getRow() + 1));
+            neighbors.add(getRowsAndColls(node.getColumn() - 1, node.getRow() - 1));
+            for (Node node1 : neighbors) {
+                if (node1 != null) {
+                    if (count <= 4) {
                         node1.setHorizontalOrvertical(true);
-                    }
-                    else{
+                    } else {
                         node1.setDiagonal(true);
                     }
                 }
                 count++;
             }
-            while (neighbors.remove(null));
             node.setNodeList(neighbors);
         }
     }
-    public void setClearButton(){
+
+    public void setClearButton() {
         clearButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 clearCanvas();
-                allNodes.clear();
-                rightNodes.clear();
+                //allNodes.clear();
+                //allNodes.clear();
                 drawGrid((int) fxSlider.getValue());
             }
         });
     }
 
 
-
-    public void stillDraw(){
-        for(Node node : rightNodes){
-            if(node.getNodeStates() != NodeStates.EMPTY){
+    public void stillDraw() {
+        for (Node node : allNodes) {
+            if (node.getNodeStates() != NodeStates.EMPTY) {
                 drawInGrid(node);
             }
         }
     }
 
-    public void drawInGrid(Node node){
+    public void drawInGrid(Node node) {
         Color color = Color.WHITE;
-        int x = (int) (node.getCollum() * fxSlider.getValue());
+        int x = (int) (node.getColumn() * fxSlider.getValue());
         int y = (int) (node.getRow() * fxSlider.getValue());
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        if(node.getNodeStates() == NodeStates.BARRIER){
+        if (node.getNodeStates() == NodeStates.BARRIER) {
             color = Color.GREY;
-        }
-        else if(node.getNodeStates() == NodeStates.LIGHTBARRIER){
+        } else if (node.getNodeStates() == NodeStates.LIGHTBARRIER) {
             color = Color.DARKGRAY;
-        }
-        else if(node.getNodeStates() == NodeStates.TARGET){
+        } else if (node.getNodeStates() == NodeStates.PATH) {
+            color = Color.BLUE;
+        } else if (node.getNodeStates() == NodeStates.TARGET) {
             color = Color.RED;
-        }
-        else if(node.getNodeStates() == NodeStates.PLAYER){
+        } else if (node.getNodeStates() == NodeStates.PLAYER) {
             color = Color.GREEN;
         }
         gc.setFill(color);
-        gc.fillRect(x+1,y+1,fxSlider.getValue() - 2, fxSlider.getValue() - 2);
+        gc.fillRect(x + 1, y + 1, fxSlider.getValue() - 3, fxSlider.getValue() - 3);
     }
 
-    public Node findNode(int x, int y){
-        for(Node node : rightNodes){
-            if(node.getX() == x && node.getY() == y){
+    public Node findNode(int x, int y) {
+        for (Node node : allNodes) {
+            if (node.getX() == x && node.getY() == y) {
                 return node;
             }
         }
         return null;
     }
-    public void drawInGrid(Color color,  javafx.scene.input.MouseEvent mouseEvent, NodeStates nodeStates) {
+
+    public void drawInGrid(Color color, javafx.scene.input.MouseEvent mouseEvent, NodeStates nodeStates) {
         int x = (int) ((int) (mouseEvent.getX() / fxSlider.getValue()) * fxSlider.getValue());
         int y = (int) ((int) (mouseEvent.getY() / fxSlider.getValue()) * fxSlider.getValue());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(color);
-        gc.fillRect(x+1,y+1,fxSlider.getValue() - 2, fxSlider.getValue() - 2);
+        gc.fillRect(x + 1, y + 1, fxSlider.getValue() - 2, fxSlider.getValue() - 2);
         Node node = findNode(x, y);
-        if(rightNodes.contains(node)){
-            int idx = rightNodes.indexOf(node);
-            if(rightNodes.get(idx).getNodeStates() == NodeStates.PLAYER){
+        if (allNodes.contains(node)) {
+            int idx = allNodes.indexOf(node);
+            if (allNodes.get(idx).getNodeStates() == NodeStates.PLAYER) {
                 setStart = false;
             }
-            if(rightNodes.get(idx).getNodeStates() == NodeStates.TARGET){
+            if (allNodes.get(idx).getNodeStates() == NodeStates.TARGET) {
                 setZiel = false;
             }
-            rightNodes.set(idx, node);
+            allNodes.set(idx, node);
         }
-        node.setNodeStates(nodeStates);
-        rightNodes.sort(new SortByRow());
-
-
+        if (node != null) node.setNodeStates(nodeStates);
+        allNodes.sort(new SortByRow());
     }
 
-    public void delteWrongRowsCollumns(int maxRow, int maxColumn){
+    public void delteWrongRowsCollumns(int maxRow, int maxColumn) {
         ArrayList<Node> toDel = new ArrayList<>();
-        for(Node node : rightNodes){
-            if(node.getRow() > maxRow ){
+        for (Node node : allNodes) {
+            if (node.getRow() > maxRow) {
                 toDel.add(node);
-            }
-            else if(node.getCollum() > maxColumn){
+            } else if (node.getColumn() > maxColumn) {
                 toDel.add(node);
             }
         }
-        rightNodes.removeAll(toDel);
+        allNodes.removeAll(toDel);
 
     }
 
-    public void printNeighborList(Node node){
-            if(rightNodes.contains(node)){
-                System.out.println(node.getNodeList());
-            }
+    public void printNeighborList(Node node) {
+        if (allNodes.contains(node)) {
+            System.out.println(node.getNodeList());
+        }
     }
 
-    public Node getStart(){
-        for(Node node : rightNodes){
-            if(node.getNodeStates() == NodeStates.PLAYER){
+    public Node getStart() {
+        for (Node node : allNodes) {
+            if (node.getNodeStates() == NodeStates.PLAYER) {
                 return node;
             }
         }
@@ -231,9 +242,9 @@ public class PathFinderController implements Initializable {
     }
 
 
-    public Node getZiel(){
-        for(Node node : rightNodes){
-            if(node.getNodeStates() == NodeStates.TARGET){
+    public Node getZiel() {
+        for (Node node : allNodes) {
+            if (node.getNodeStates() == NodeStates.TARGET) {
                 return node;
             }
         }
@@ -241,60 +252,85 @@ public class PathFinderController implements Initializable {
     }
 
 
-
+    // find and draw path from player to target using astar algorithm
     public void aStarAlgorithm() {
         Node start = getStart();
         Node ziel = getZiel();
-
-        if(start != null) {
-
-            ArrayList<Node> neighborlist = start.getNodeList();
-            for (Node node : start.getNodeList()) {
-                if (node.isHorizontalOrvertical()) {
-                    node.setgCosts(node.getgCosts() + 10);
-                } else if (node.isDiagonal()) {
-                    node.sethCosts(node.gethCosts() + 14);
+        if (start != null && ziel != null) {
+            ArrayList<Node> openList = new ArrayList<>();
+            ArrayList<Node> closedList = new ArrayList<>();
+            openList.add(start);
+            while (openList.size() > 0) {
+                Node currentNode = openList.get(0);
+                for (int i = 0; i < openList.size(); i++) {
+                    if (openList.get(i).getfCosts() < currentNode.getfCosts() || openList.get(i).getfCosts() == currentNode.getfCosts() && openList.get(i).gethCosts() < currentNode.gethCosts()) {
+                        currentNode = openList.get(i);
+                    }
                 }
+                openList.remove(currentNode);
+                closedList.add(currentNode);
+                if (currentNode == ziel) {
+                    Node tmp = currentNode;
+                    while (tmp != null) {
+                        tmp.setNodeStates(NodeStates.PATH);
+                        tmp = tmp.getParent();
+                    }
+                    break;
+                }
+                for (Node neighbor : currentNode.getNodeList()) {
+                    if (neighbor == null || neighbor.getNodeStates() == NodeStates.BARRIER || neighbor.getNodeStates() == NodeStates.LIGHTBARRIER || closedList.contains(neighbor)) {
+                        continue;
+                    }
+                    double newMovementCostToNeighbor = currentNode.getgCosts() + getDistance(currentNode, neighbor);
+                    if (newMovementCostToNeighbor < neighbor.getgCosts() || !openList.contains(neighbor)) {
+                        neighbor.setgCosts(newMovementCostToNeighbor);
+                        neighbor.sethCosts(getDistance(neighbor, ziel));
+                        neighbor.setParent(currentNode);
+                        if (!openList.contains(neighbor)) {
+                            openList.add(neighbor);
+                        }
+                    }
+                }
+
             }
         }
+        System.out.println("ziel" + ziel);
+        stillDraw();
+    }
 
+    public double getDistance(Node self, Node other) {
+        return Math.hypot(self.getX() - other.getX(), self.getY() - other.getY());
     }
 
 
-
-    public void drawInNode(){
+    public void drawInNode() {
         canvas.setOnMouseDragged(mouseEvent -> {
 
-            if(radioButonBarrier.isSelected()) {
+            if (radioButonBarrier.isSelected()) {
                 drawInGrid(Color.GREY, mouseEvent, NodeStates.BARRIER);
-            }
-            else if(lightBarrierRadioButton.isSelected()){
+            } else if (lightBarrierRadioButton.isSelected()) {
                 drawInGrid(Color.DARKGRAY, mouseEvent, NodeStates.LIGHTBARRIER);
-            }
-
-            else if(loeschenRadioButton.isSelected()){
+            } else if (loeschenRadioButton.isSelected()) {
                 drawInGrid(Color.WHITE, mouseEvent, NodeStates.EMPTY);
             }
             aStarAlgorithm();
         });
 
         canvas.setOnMouseClicked(mouseEvent -> {
-            if(radioButonBarrier.isSelected()) {
+            if (radioButonBarrier.isSelected()) {
                 drawInGrid(Color.GREY, mouseEvent, NodeStates.BARRIER);
-            }
-            else if(lightBarrierRadioButton.isSelected()){
+            } else if (lightBarrierRadioButton.isSelected()) {
                 drawInGrid(Color.DARKGRAY, mouseEvent, NodeStates.LIGHTBARRIER);
-            }
-            else if(loeschenRadioButton.isSelected()){
+            } else if (loeschenRadioButton.isSelected()) {
                 drawInGrid(Color.WHITE, mouseEvent, NodeStates.EMPTY);
             }
-            if(!setStart ) {
+            if (!setStart) {
                 if (startRadioButton.isSelected()) {
                     drawInGrid(Color.GREEN, mouseEvent, NodeStates.PLAYER);
                     setStart = true;
                 }
             }
-            if(!setZiel) {
+            if (!setZiel) {
                 if (zielRadioButton.isSelected()) {
                     drawInGrid(Color.RED, mouseEvent, NodeStates.TARGET);
                     setZiel = true;
@@ -307,9 +343,9 @@ public class PathFinderController implements Initializable {
         stillDraw();
     }
 
-    public void setCheckBoxSettings(){
+    public void setCheckBoxSettings() {
         checkBox.setSelected(true);
-        if(checkBox.isSelected()){
+        if (checkBox.isSelected()) {
             drawGrid((int) fxSlider.getValue());
             fxSlider.valueProperty().addListener((observableValue, number, t1) -> {
                 if (!fxSlider.isValueChanging()) {
@@ -321,6 +357,7 @@ public class PathFinderController implements Initializable {
             });
         }
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         drawInNode();
@@ -337,6 +374,10 @@ public class PathFinderController implements Initializable {
             drawGrid((int) fxSlider.getValue());
         });
 
+        astar.setOnAction(actionEvent -> {
+            aStarAlgorithm();
+        });
+
         checkBox.selectedProperty().addListener((o, oldV, newV) -> {
             if (checkBox.isSelected()) {
                 drawGrid((int) fxSlider.getValue());
@@ -348,8 +389,7 @@ public class PathFinderController implements Initializable {
                         stillDraw();
                     }
                 });
-            }
-            else{
+            } else {
                 clearCanvas();
                 stillDraw();
             }
