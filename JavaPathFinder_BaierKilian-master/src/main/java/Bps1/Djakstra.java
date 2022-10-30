@@ -3,7 +3,7 @@ package Bps1;
 import java.util.ArrayList;
 
 public class Djakstra {
-    //Djakstra algorithm for finding the shortest path from player to target
+
     public static ArrayList<Node> findPath(Node start, Node target, Node[][] nodes) {
         ArrayList<Node> openList = new ArrayList<>();
         ArrayList<Node> closedList = new ArrayList<>();
