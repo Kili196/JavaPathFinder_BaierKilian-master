@@ -91,8 +91,8 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                "row=" + row +
-                ", collum=" + collum +
+                "collum=" +collum +
+                ", row=" + row +
                 ", nodeState=" + nodeState +
                 ", F=" + F +
                 ", H=" + H +

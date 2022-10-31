@@ -9,6 +9,7 @@ public class AStar {
         ArrayList<Node> path = new ArrayList<>();
         ArrayList<Node> visited = new ArrayList<>();
         Node tmp_Node = null;
+        int count = 0;
         start.setG(0);
         start.setH(getDistance(start, target));
         start.setF();
@@ -18,35 +19,8 @@ public class AStar {
             if (current == target) {
                 break;
             }
-            ArrayList<Node> neighbours = new ArrayList<>();
-            if (current != null) {
-                if (current.getCollum() < nodes.length) {
-                    neighbours.add(nodes[current.getCollum() + 1][current.getRow()]);
-                }
-                if (current.getCollum() > 0) {
-                    neighbours.add(nodes[current.getCollum() - 1][current.getRow()]);
-                }
-                if (current.getRow() < nodes[0].length - 1) {
-                    neighbours.add(nodes[current.getCollum()][current.getRow() + 1]);
-                }
-                if (current.getRow() > 0) {
-                    neighbours.add(nodes[current.getCollum()][current.getRow() - 1]);
-                }
-            }
-            if (current.getRow() >= 0 && current.getCollum() < nodes.length) {
-                neighbours.add(nodes[current.getCollum() + 1][current.getRow() + 1]);
-            }
-            if (current.getRow() < nodes[0].length - 1 && current.getRow() < 0 && current.getCollum() > 0) {
-                neighbours.add(nodes[current.getCollum() - 1][current.getRow() - 1]);
-            }
-            if (current.getRow() < nodes[0].length - 1 && current.getCollum() < nodes.length && current.getRow() > 0) {
-                neighbours.add(nodes[current.getCollum() + 1][current.getRow() - 1]);
-            }
-            if (current.getRow() > 0 && current.getCollum() > 0) {
-                neighbours.add(nodes[current.getCollum() - 1][current.getRow() + 1]);
-            }
 
-
+            ArrayList<Node> neighbours = getNeighbours(current, nodes);
             tmp_Node = null;
             for (Node node_neighbor : neighbours) {
                 if (node_neighbor != null && node_neighbor.getNodeState() != NodeStates.BARRIER) {
@@ -56,24 +30,56 @@ public class AStar {
                     if (tmp_Node == null) {
                         tmp_Node = node_neighbor;
                     }
-                    System.out.println(node_neighbor.getF());
-                    System.out.println(tmp_Node.getF());
-                    ;
-                    if (node_neighbor.getF() <= tmp_Node.getF() && node_neighbor.getNodeState() != NodeStates.PLAYER && !visited.contains(node_neighbor)) {
+                    if (node_neighbor.getF() < tmp_Node.getF() && node_neighbor.getNodeState() != NodeStates.PLAYER && !visited.contains(node_neighbor) || count == 0) {
                         tmp_Node = node_neighbor;
                         visited.add(tmp_Node);
+                        count++;
 
                     }
                 }
             }
             openList.remove(current);
             openList.add(tmp_Node);
+            System.out.println(path);
+            System.out.println(visited + " visited");
             path.add(tmp_Node);
         }
         return path;
     }
 
-    //getNeighbors diagonal
+    private static ArrayList<Node> getNeighbours(Node current, Node[][] nodes) {
+        ArrayList<Node> neighbours = new ArrayList<>();
+        if (current != null) {
+            if (current.getCollum() < nodes.length) {
+                neighbours.add(nodes[current.getCollum() + 1][current.getRow()]);
+            }
+            if (current.getCollum() > 0) {
+                neighbours.add(nodes[current.getCollum() - 1][current.getRow()]);
+            }
+            if (current.getRow() < nodes[0].length - 1) {
+                neighbours.add(nodes[current.getCollum()][current.getRow() + 1]);
+            }
+            if (current.getRow() > 0) {
+                neighbours.add(nodes[current.getCollum()][current.getRow() - 1]);
+            }
+        }
+        if (current.getRow() >= 0 && current.getCollum() < nodes.length) {
+            neighbours.add(nodes[current.getCollum() + 1][current.getRow() + 1]);
+        }
+        if (current.getRow() < nodes[0].length - 1 && current.getRow() < 0 && current.getCollum() > 0) {
+            neighbours.add(nodes[current.getCollum() - 1][current.getRow() - 1]);
+        }
+        if (current.getRow() < nodes[0].length - 1 && current.getCollum() < nodes.length && current.getRow() > 0) {
+            neighbours.add(nodes[current.getCollum() + 1][current.getRow() - 1]);
+        }
+        if (current.getRow() > 0 && current.getCollum() > 0) {
+            neighbours.add(nodes[current.getCollum() - 1][current.getRow() + 1]);
+        }
+        return neighbours;
+    }
+
+
+
 
 
 
